@@ -2,7 +2,6 @@ package producer
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 )
 
@@ -31,7 +30,6 @@ func (k *Writer) WriteMessages(ctx context.Context, messages []string) error {
 			Value: []byte(m),
 		})
 		if err != nil {
-			fmt.Println(err)
 			return err
 		}
 	}
