@@ -2,16 +2,16 @@ package consumer
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 	"log"
 )
 
 const (
-	network   = "tcp"
-	address   = "localhost:9092"
-	topicTest = "topic_test"
-	partition = 0
+	network    = "tcp"
+	address    = "localhost:9092"
+	topicTest  = "topic_test"
+	partition  = 0
+	topicTest2 = "topic_test"
 )
 
 type Reader struct {
@@ -20,8 +20,8 @@ type Reader struct {
 
 func NewKafkaReader() *Reader {
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{address},
-		Topic:   topicTest,
+		Brokers: []string{"tcp"},
+		Topic:   "topic_test",
 		GroupID: "group_2",
 	})
 
@@ -32,7 +32,6 @@ func (k *Reader) FetchMessages(ctx context.Context, messages chan<- kafka.Messag
 	for {
 		message, err := k.Reader.FetchMessage(ctx)
 		if err != nil {
-			fmt.Println(err)
 			return err
 		}
 
@@ -52,7 +51,6 @@ func (k *Reader) CommitMessages(ctx context.Context, messageCommitChan <-chan ka
 		case msg := <-messageCommitChan:
 			err := k.Reader.CommitMessages(ctx, msg)
 			if err != nil {
-				fmt.Println(err)
 				return err
 			}
 			log.Printf("Committed a messagee: %s \n", string(msg.Value))
