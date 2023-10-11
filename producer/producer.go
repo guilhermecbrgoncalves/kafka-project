@@ -2,7 +2,6 @@ package producer
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 )
 
@@ -14,7 +13,8 @@ const (
 )
 
 type Writer struct {
-	Writer *kafka.Writer
+	Writer           *kafka.Writer
+	SomethingNotUsed int
 }
 
 func NewKafkaWriter() *Writer {
@@ -31,8 +31,7 @@ func (k *Writer) WriteMessages(ctx context.Context, messages []string) error {
 			Value: []byte(m),
 		})
 		if err != nil {
-			fmt.Println(err)
-			return err
+			return nil
 		}
 	}
 
