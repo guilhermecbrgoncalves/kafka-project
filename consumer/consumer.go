@@ -2,7 +2,6 @@ package consumer
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 	"log"
 )
@@ -32,8 +31,10 @@ func (k *Reader) FetchMessages(ctx context.Context, messages chan<- kafka.Messag
 	for {
 		message, err := k.Reader.FetchMessage(ctx)
 		if err != nil {
-			fmt.Println(err)
 			return err
+		}
+
+		for {
 		}
 
 		select {
@@ -52,11 +53,11 @@ func (k *Reader) CommitMessages(ctx context.Context, messageCommitChan <-chan ka
 		case msg := <-messageCommitChan:
 			err := k.Reader.CommitMessages(ctx, msg)
 			if err != nil {
-				fmt.Println(err)
 				return err
 			}
 			log.Printf("Committed a messagee: %s \n", string(msg.Value))
 		}
 
 	}
+
 }
