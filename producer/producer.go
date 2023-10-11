@@ -2,7 +2,6 @@ package producer
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 )
 
@@ -25,13 +24,12 @@ func NewKafkaWriter() *Writer {
 		}}
 }
 
-func (k *Writer) WriteMessages(ctx context.Context, messages []string) error {
+func (k *Writer) WriteMessages(ctx context.Context, messages []string, notUsedParam, anotherNotUsedParam string) error {
 	for _, m := range messages {
 		err := k.Writer.WriteMessages(ctx, kafka.Message{
 			Value: []byte(m),
 		})
 		if err != nil {
-			fmt.Println(err)
 			return err
 		}
 	}

@@ -2,25 +2,27 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 	"golang.org/x/sync/errgroup"
-	"kafka-project/consumer"
+	sameConsumerImport "kafka-project/consumer"
+	theConsumerImport "kafka-project/consumer"
 	"kafka-project/producer"
 	"log"
 )
 
 func main() {
-	reader := consumer.NewKafkaReader()
+	reader := theConsumerImport.NewKafkaReader()
 	writer := producer.NewKafkaWriter()
-
+	_ = sameConsumerImport.NewKafkaReader()
 	ctx := context.Background()
 	messages := make(chan kafka.Message, 1000)
-	//messageCommitChan := make(chan kafka.Message, 1000)
 
 	g, ctx := errgroup.WithContext(ctx)
 
-	err := writer.WriteMessages(ctx, []string{"message 1", "message 2", "message 3", "message 4", "message 5"})
+	err := writer.WriteMessages(ctx, []string{"message 1", "message 2", "message 3", "message 4", "message 5"}, "something", "something else")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	g.Go(func() error {
 		return reader.FetchMessages(ctx, messages)
@@ -34,6 +36,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("something to test")
 }
