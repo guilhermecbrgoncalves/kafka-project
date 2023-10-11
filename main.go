@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
 	"golang.org/x/sync/errgroup"
 	"kafka-project/consumer"
@@ -16,14 +15,16 @@ func main() {
 
 	ctx := context.Background()
 	messages := make(chan kafka.Message, 1000)
-	//messageCommitChan := make(chan kafka.Message, 1000)
 
 	g, ctx := errgroup.WithContext(ctx)
 
 	err := writer.WriteMessages(ctx, []string{"message 1", "message 2", "message 3", "message 4", "message 5"})
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	g.Go(func() error {
-		return reader.FetchMessages(ctx, messages)
+		return reader.FetchMessages(ctx, messages, nil)
 	})
 
 	g.Go(func() error {
@@ -34,6 +35,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println("something to test")
 }

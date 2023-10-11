@@ -28,11 +28,11 @@ func NewKafkaReader() *Reader {
 	return &Reader{Reader: reader}
 }
 
-func (k *Reader) FetchMessages(ctx context.Context, messages chan<- kafka.Message) error {
+func (k *Reader) FetchMessages(ctx context.Context, messages chan<- kafka.Message, somePointer *string) error {
+	fmt.Println(somePointer)
 	for {
 		message, err := k.Reader.FetchMessage(ctx)
 		if err != nil {
-			fmt.Println(err)
 			return err
 		}
 
@@ -52,11 +52,10 @@ func (k *Reader) CommitMessages(ctx context.Context, messageCommitChan <-chan ka
 		case msg := <-messageCommitChan:
 			err := k.Reader.CommitMessages(ctx, msg)
 			if err != nil {
-				fmt.Println(err)
-				return err
+				return nil
 			}
 			log.Printf("Committed a messagee: %s \n", string(msg.Value))
 		}
-
+		return nil
 	}
 }
